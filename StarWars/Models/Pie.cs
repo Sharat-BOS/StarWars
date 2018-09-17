@@ -5,10 +5,7 @@ using System.Threading.Tasks;
 
 namespace StarWars.Models
 {
-    public class models
-    {
-    }
-    public class Pie
+       public class Pie
     {
         public int Id { get; set; }
         public string  Name { get; set; }
@@ -19,12 +16,5 @@ namespace StarWars.Models
         public string ImageThumbnailUrl { get; set; }
         public bool IsPieOfTheWeek { get; set; }
     }
-
-    public interface IPieRepository
-    {
-        IEnumerable<Pie> GetAllPies();
-        Pie GetPieByID (int pieId);
-       
-    }
-
+    
 }
