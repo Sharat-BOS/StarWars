@@ -35,11 +35,11 @@ namespace StarWars
             //Add transient method means when anyone  asks for IPieRpository a new Mock Pie Repository will be returned.
             services.AddTransient<IPieRepository, MockPieRepository>();
 
-            //Add Singleton method means whenever anyone  asks for IPieRpository only single instance Mock Pie Repository will be created and returned. This same instance of MockPie Repository is returned every time.
-            services.AddSingleton<IPieRepository, MockPieRepository>();
+            ////Add Singleton method means whenever anyone  asks for IPieRpository only single instance Mock Pie Repository will be created and returned. This same instance of MockPie Repository is returned every time.
+            //services.AddSingleton<IPieRepository, MockPieRepository>();
 
-            //Add Scoped method is kid of in between singleton and Transent, it means whenever anyone asks for IPieRepository same instance Mock Pie Repository will be returned as long as request is in scope, when it is out of scope a new instance of MockPie repository is created. 
-            services.AddScoped<IPieRepository, MockPieRepository>();
+            ////Add Scoped method is kid of in between singleton and Transent, it means whenever anyone asks for IPieRepository same instance Mock Pie Repository will be returned as long as request is in scope, when it is out of scope a new instance of MockPie repository is created. 
+            //services.AddScoped<IPieRepository, MockPieRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,9 +75,16 @@ namespace StarWars
             //Use MVC with specified routes only one route is defined because it is a single page applciation.
             app.UseMvc(routes =>
             {
+               
+
+               
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                   name: "default",
+                   template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                   name: "Pie",
+                   template: "{controller=Pie}/{action=List}/{id?}");
 
                 routes.MapSpaFallbackRoute(
                     name: "spa-fallback",
