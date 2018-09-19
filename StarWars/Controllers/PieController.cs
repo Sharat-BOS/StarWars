@@ -18,8 +18,7 @@ namespace StarWars.Controllers
         }
         // GET: /<controller>/
         public IActionResult List()
-        {
-         
+        {         
             var pies = _pieRepository.GetAllPies().OrderBy(p => p.Name);
             //Here we are using two different classes to populate all data required for the view. which is not ideal so we can create a view Model to populate all data required to populate the view.
             var pieViewModel = new PieViewModel() {

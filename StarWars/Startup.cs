@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StarWars.Models;
@@ -12,17 +13,21 @@ namespace StarWars
 {
     public class Startup
     {
+        //contains all information read out from appsettings.json and other configuration information
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
+        
 
         // This method gets called by the runtime. Use this method to add services to the container.
         //Notes: In startup class configure Service Method is called First.
         public void ConfigureServices(IServiceCollection services)
-        {   
+        {
+
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDBConnection")));
             //Register Services here System or Custom Services.
             //System Services
             services.AddMvc();
@@ -33,7 +38,16 @@ namespace StarWars
 
             //Registering Custom services,
             //Add transient method means when anyone  asks for IPieRpository a new Mock Pie Repository will be returned.
-            services.AddTransient<IPieRepository, MockPieRepository>();
+            //Initialy we used MockPie Repository because we did not connect to database now that we are using EF to connect to DB we dont need Mock Data or MockPieRepository for Dependancy injection. so its commented.
+            //services.AddTransient<IPieRepository, MockPieRepository>();
+            services.AddTransient<IPieRepository, PieRepository>(); //newly Created Pie repository uses EF to connect to DB.
+            services.AddTransient<IFactionRepository, FactionRepository>(); //newly Created Pie repository uses EF to connect to DB.
+            services.AddTransient<IEpisodeRepository, EpisodeRepository>(); //newly Created Pie repository uses EF to connect to DB.
+            services.AddTransient<ICharacterRepository, CharacterRepository>(); //newly Created Pie repository uses EF to connect to DB.
+            services.AddTransient<ICharacterTypeRepository, CharacterTypeRepository>(); //newly Created Pie repository uses EF to connect to DB.
+            services.AddTransient<ICharacterGroupRepository, CharacterGroupRepository>(); //newly Created Pie repository uses EF to connect to DB.
+            services.AddTransient<IStarshipRepository, StarshipRepository>(); //newly Created Pie repository uses EF to connect to DB.
+
 
             ////Add Singleton method means whenever anyone  asks for IPieRpository only single instance Mock Pie Repository will be created and returned. This same instance of MockPie Repository is returned every time.
             //services.AddSingleton<IPieRepository, MockPieRepository>();

@@ -19,10 +19,10 @@ namespace StarWars.Models
         private void InitializePies() {
             _pies = new List<Pie>
             {
-                new Pie { Id=1,Name="Apple Pie",Price=12.95M,ShortDescription="",LongDescription="",   ImageUrl =""},
-                new Pie { Id=1,Name="Blueberry Pie",Price=11.95M,ShortDescription="",LongDescription="",  ImageUrl =""},
-                new Pie { Id=1,Name="Cheese Cake",Price=15.95M,ShortDescription="",LongDescription="",  ImageUrl =""},
-                new Pie { Id=1,Name="Cherry Pie",Price=10.95M,ShortDescription="",LongDescription="",  ImageUrl =""}
+                new Pie { Id=1,Name="Apple Pie",Price=12.95,ShortDescription="",LongDescription="",   ImageUrl =""},
+                new Pie { Id=1,Name="Blueberry Pie",Price=11.95,ShortDescription="",LongDescription="",  ImageUrl =""},
+                new Pie { Id=1,Name="Cheese Cake",Price=15.95,ShortDescription="",LongDescription="",  ImageUrl =""},
+                new Pie { Id=1,Name="Cherry Pie",Price=10.95,ShortDescription="",LongDescription="",  ImageUrl =""}
             };
         }
         IEnumerable<Pie> IPieRepository.GetAllPies()
