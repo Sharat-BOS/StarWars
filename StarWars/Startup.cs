@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GraphQL;
+using GraphQL.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
@@ -27,7 +29,7 @@ namespace StarWars
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDBConnection")));
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDBConnection")));            
             //Register Services here System or Custom Services.
             //System Services
             services.AddMvc();
@@ -40,6 +42,7 @@ namespace StarWars
             //Add transient method means when anyone  asks for IPieRpository a new Mock Pie Repository will be returned.
             //Initialy we used MockPie Repository because we did not connect to database now that we are using EF to connect to DB we dont need Mock Data or MockPieRepository for Dependancy injection. so its commented.
             //services.AddTransient<IPieRepository, MockPieRepository>();
+            
             services.AddTransient<IPieRepository, PieRepository>(); //newly Created Pie repository uses EF to connect to DB.
             services.AddTransient<IFactionRepository, FactionRepository>(); //newly Created Pie repository uses EF to connect to DB.
             services.AddTransient<IEpisodeRepository, EpisodeRepository>(); //newly Created Pie repository uses EF to connect to DB.
@@ -47,6 +50,12 @@ namespace StarWars
             services.AddTransient<ICharacterTypeRepository, CharacterTypeRepository>(); //newly Created Pie repository uses EF to connect to DB.
             services.AddTransient<ICharacterGroupRepository, CharacterGroupRepository>(); //newly Created Pie repository uses EF to connect to DB.
             services.AddTransient<IStarshipRepository, StarshipRepository>(); //newly Created Pie repository uses EF to connect to DB.
+            services.AddScoped<IDocumentExecuter, DocumentExecuter>();
+            var sp = services.BuildServiceProvider();
+            services.AddScoped<ISchema>(_ => new StarWarsSchema(type => (GraphType)sp.GetService(type)) { Query = sp.GetService<StarWarsQuery>() });
+            services.AddScoped<StarWarsQuery>();
+
+
 
 
             ////Add Singleton method means whenever anyone  asks for IPieRpository only single instance Mock Pie Repository will be created and returned. This same instance of MockPie Repository is returned every time.
