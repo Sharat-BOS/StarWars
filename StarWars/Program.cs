@@ -30,9 +30,9 @@ namespace StarWars
                     DbInitializer.Seed(context);
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    //log
+                    //log 
                 }
 
             }

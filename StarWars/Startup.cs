@@ -50,13 +50,44 @@ namespace StarWars
             services.AddTransient<ICharacterTypeRepository, CharacterTypeRepository>(); //newly Created Pie repository uses EF to connect to DB.
             services.AddTransient<ICharacterGroupRepository, CharacterGroupRepository>(); //newly Created Pie repository uses EF to connect to DB.
             services.AddTransient<IStarshipRepository, StarshipRepository>(); //newly Created Pie repository uses EF to connect to DB.
-            services.AddScoped<IDocumentExecuter, DocumentExecuter>();
+            services.AddScoped<IDocumentExecuter, DocumentExecuter>();          
+            services.AddTransient<FactionQLType>();
+            services.AddTransient<FactionInputType>();
+            services.AddTransient<EpisodeQLType>();
+            services.AddTransient<EpisodeInputType>();
+            services.AddTransient<CharacterQLType>();
+            services.AddTransient<CharacterInputType>();
+            services.AddTransient<EpisodeCharacterInputType>();
+            services.AddTransient<StarshipCharacterInputType>();
+            services.AddTransient<CharacterTypeQLType>();
+            services.AddTransient<CharacterTypeInputType>();
+            services.AddTransient<CharacterGroupQLType>();
+            services.AddTransient<CharacterGroupInputType>();
+            services.AddTransient<StarshipQLType>();
+            services.AddTransient<StarshipInputType>();
+            services.AddTransient<StarWarsQuery>();
+            services.AddTransient<StarWarsMutation>();           
             var sp = services.BuildServiceProvider();
-            services.AddScoped<ISchema>(_ => new StarWarsSchema(type => (GraphType)sp.GetService(type)) { Query = sp.GetService<StarWarsQuery>() });
-            services.AddScoped<StarWarsQuery>();
+            services.AddScoped<ISchema>(_ => new StarWarsSchema(type => (GraphType) sp.GetService(type)) { Query = sp.GetService<StarWarsQuery>(), Mutation = sp.GetService<StarWarsMutation>() });
+            //services.AddSingleton(s => new StarWarsSchema(new FuncDependencyResolver(type => (IGraphType)s.GetRequiredService(type))));
+           // services.AddSingleton<ISchema>(new StarWarsSchema(new FuncDependencyResolver(type => sp.GetService(type))));
 
+            services.AddCors(options =>
+            {
+                //Create CORS Policy for any Origin,Specific methods and allowed headers
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                   .WithMethods(Configuration["AllowedMethods"])
+                   .WithHeaders(Configuration["AllowedHeaders"]));
 
+                //Create CORS Policy for specific Origin,Specific methods and allowed headers
+                options.AddPolicy("CorsPolicy_With_Specific_Origin",
+                    builder => builder.WithOrigins("*")
+                   .WithMethods("POST", "GET", "PUT", "DELETE", "OPTIONS")
+                   .WithHeaders("X-Requested-With,Content-Type,clientid,tokenid,applicationid,licenseKey,Content-Type,Accept,Chunk-Index,Chunk-Max,Rename,InstanceUserData,InstanceData,UploadId,FileId, ,isLastFileLastChunk,pageNumber,pageSize,googleTokenID")
+                   );
 
+            });
 
             ////Add Singleton method means whenever anyone  asks for IPieRpository only single instance Mock Pie Repository will be created and returned. This same instance of MockPie Repository is returned every time.
             //services.AddSingleton<IPieRepository, MockPieRepository>();

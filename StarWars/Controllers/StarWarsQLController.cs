@@ -24,7 +24,7 @@ namespace StarWars.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]StarWarsQLQuery query)
+        public async Task<IActionResult> Post([FromBody]GraphQLQuery query)
         {
             if (query == null) { throw new ArgumentNullException(nameof(query)); }
             var inputs = query.Variables.ToInputs();
