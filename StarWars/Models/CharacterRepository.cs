@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,13 +15,13 @@ namespace StarWars.Models
         }
 
         public async Task<IList<Character>> GetCharacter()
-        {
-            return await Task.FromResult<IList<Character>>(_appDbContext.Characters.ToList());
+        {            
+            return await Task.FromResult<IList<Character>>(_appDbContext.Characters.Include(c => c.Faction).Include(c=>c.CharacterGroup).Include(c=>c.CharacterType).ToList());
         }
 
         public async Task<Character> GetCharacter(int Id)
         {
-            return await Task.FromResult(_appDbContext.Characters.FirstOrDefault(c => c.Id == Id));
+            return await Task.FromResult(_appDbContext.Characters.Include(c => c.Faction).Include(c => c.CharacterGroup).Include(c => c.CharacterType).FirstOrDefault(c => c.Id == Id));
         }
 
         public async Task<Character> AddCharacter(Character character)

@@ -68,9 +68,9 @@ namespace StarWars
             services.AddTransient<StarWarsQuery>();
             services.AddTransient<StarWarsMutation>();           
             var sp = services.BuildServiceProvider();
-            services.AddScoped<ISchema>(_ => new StarWarsSchema(type => (GraphType) sp.GetService(type)) { Query = sp.GetService<StarWarsQuery>(), Mutation = sp.GetService<StarWarsMutation>() });
-            //services.AddSingleton(s => new StarWarsSchema(new FuncDependencyResolver(type => (IGraphType)s.GetRequiredService(type))));
-           // services.AddSingleton<ISchema>(new StarWarsSchema(new FuncDependencyResolver(type => sp.GetService(type))));
+            //services.AddSingleton<ISchema>(_ => new StarWarsSchema(type => (GraphType) sp.GetService(type)) { Query = sp.GetService<StarWarsQuery>(), Mutation = sp.GetService<StarWarsMutation>() });
+            //services.AddSingleton(s => new StarWarsSchema(new FuncDependencyResolver(type => (GraphType)s.GetRequiredService(type))));
+            services.AddSingleton<ISchema>(new StarWarsSchema(new FuncDependencyResolver(type => sp.GetService(type))));
 
             services.AddCors(options =>
             {

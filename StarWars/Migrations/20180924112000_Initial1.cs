@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace StarWars.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Initial1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -89,7 +89,7 @@ namespace StarWars.Migrations
                     CharacterGroupID = table.Column<int>(nullable: false),
                     HomePlanet = table.Column<string>(maxLength: 200, nullable: true),
                     Purpose = table.Column<string>(maxLength: 200, nullable: true),
-                    FactionID = table.Column<int>(nullable: false),
+                    FactionID = table.Column<int>(nullable: true),
                     ImageUrl = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -112,7 +112,7 @@ namespace StarWars.Migrations
                         column: x => x.FactionID,
                         principalTable: "Factions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -204,14 +204,35 @@ namespace StarWars.Migrations
                 column: "CharacterId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Episodes_EpisodeName",
+                table: "Episodes",
+                column: "EpisodeName",
+                unique: true,
+                filter: "[EpisodeName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Episodes_StarshipId",
                 table: "Episodes",
                 column: "StarshipId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Factions_FactionName",
+                table: "Factions",
+                column: "FactionName",
+                unique: true,
+                filter: "[FactionName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StarshipCharacter_CharacterId",
                 table: "StarshipCharacter",
                 column: "CharacterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Starships_StarshipName",
+                table: "Starships",
+                column: "StarshipName",
+                unique: true,
+                filter: "[StarshipName] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

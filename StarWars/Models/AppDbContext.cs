@@ -17,6 +17,11 @@ namespace StarWars.Models
         //public static readonly LoggerFactory loggerFactory = new LoggerFactory(new[] { new ConsoleLoggerProvider((category, level) => category == DbLoggerCategory.Database.Command.Name && level == LogLevel.Information, true) });
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
+
+
+            modelBuilder.Entity<Faction>().HasIndex(f => f.FactionName).IsUnique();
+            modelBuilder.Entity<Episode>().HasIndex(e => e.EpisodeName).IsUnique();
+            modelBuilder.Entity<Starship>().HasIndex(s => s.StarshipName).IsUnique();
             modelBuilder.Entity<EpisodeCharacter>().HasKey(e => new { e.EpisodeId, e.CharacterId });
             modelBuilder.Entity<StarshipCharacter>().HasKey(e => new { e.StarshipId, e.CharacterId });
         }

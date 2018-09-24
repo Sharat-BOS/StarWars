@@ -30,9 +30,11 @@ namespace StarWars
                     DbInitializer.Seed(context);
 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    //log 
+                    //log  
+                    //_logger.LogError($"Something went wrong: {ex}");
+                    //return StatusCode(500, "Internal server error");
                 }
 
             }

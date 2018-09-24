@@ -47,7 +47,7 @@ namespace StarWars.Models
         {
             Field(x => x.Id).Description("Character id.");
             Field(x => x.CharacterName, nullable: false).Description("Character name.");
-            Field(x => x.CharacterTypeID, nullable: true).Description("Character Type ID.");
+            Field(x => x.CharacterTypeID, nullable: true).Description("Character Type ID.");            
             Field<ObjectGraphType<CharacterTypeQLType>>("CharacterType", "Type of Character");
             Field(x => x.CharacterGroupID, nullable: false).Description("Character Group ID.");
             Field<ObjectGraphType<CharacterGroupQLType>>("CharacterGroup", "Character Group");
@@ -55,7 +55,7 @@ namespace StarWars.Models
             Field<ObjectGraphType<StarshipCharacterQLType>>("Starships", "character Starships");
             Field(x => x.HomePlanet, nullable: false).Description("Character HomePlanet.");
             Field(x => x.Purpose, nullable: false).Description("Character Purpose.");
-            Field(x => x.FactionID, nullable: false).Description("Character FactionID.");
+            Field(x => x.FactionID, nullable: true).Description("Character FactionID.");
             Field<ObjectGraphType<FactionQLType>>("Faction", "character Faction");
             Field(x => x.ImageUrl, nullable: false).Description("Character ImageUrl.");
             //    (
@@ -68,7 +68,7 @@ namespace StarWars.Models
     {
         public CharacterTypeQLType()
         {
-            Field(x => x.Id).Description("Character id.");
+            Field(x => x.Id).Description("Character type id.");
             Field(x => x.CharacterTypeName, nullable: false).Description("Name of character type.");
         }
     }

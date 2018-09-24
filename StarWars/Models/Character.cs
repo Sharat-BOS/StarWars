@@ -28,8 +28,8 @@ namespace StarWars.Models
         public string HomePlanet { get; set; }
         [MaxLength(200)]
         public string Purpose { get; set; }
-        public int FactionID { get; set; }
-        public Faction Faction { get; set; }
+        public int? FactionID { get; set; }
+        public virtual Faction Faction { get; set; }
         public string ImageUrl { get; internal set; }
 
     }

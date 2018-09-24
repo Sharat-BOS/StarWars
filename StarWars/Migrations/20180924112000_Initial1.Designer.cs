@@ -10,8 +10,8 @@ using StarWars.Models;
 namespace StarWars.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20180921112518_Initial")]
-    partial class Initial
+    [Migration("20180924112000_Initial1")]
+    partial class Initial1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,7 +34,7 @@ namespace StarWars.Migrations
 
                     b.Property<int>("CharacterTypeID");
 
-                    b.Property<int>("FactionID");
+                    b.Property<int?>("FactionID");
 
                     b.Property<string>("HomePlanet")
                         .HasMaxLength(200);
@@ -95,6 +95,10 @@ namespace StarWars.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EpisodeName")
+                        .IsUnique()
+                        .HasFilter("[EpisodeName] IS NOT NULL");
+
                     b.HasIndex("StarshipId");
 
                     b.ToTable("Episodes");
@@ -122,6 +126,10 @@ namespace StarWars.Migrations
                     b.Property<string>("FactionName");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FactionName")
+                        .IsUnique()
+                        .HasFilter("[FactionName] IS NOT NULL");
 
                     b.ToTable("Factions");
                 });
@@ -162,6 +170,10 @@ namespace StarWars.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("StarshipName")
+                        .IsUnique()
+                        .HasFilter("[StarshipName] IS NOT NULL");
+
                     b.ToTable("Starships");
                 });
 
@@ -192,8 +204,7 @@ namespace StarWars.Migrations
 
                     b.HasOne("StarWars.Models.Faction", "Faction")
                         .WithMany("Characters")
-                        .HasForeignKey("FactionID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("FactionID");
                 });
 
             modelBuilder.Entity("StarWars.Models.Episode", b =>

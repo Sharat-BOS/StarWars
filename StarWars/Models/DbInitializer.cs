@@ -27,7 +27,13 @@ namespace StarWars.Models
                     new Faction { FactionName = "Empire" },
                     new Faction { FactionName = "Repbels" },
                     new Faction { FactionName = "Sith" },
-                    new Faction { FactionName = "Jedi" }
+                    new Faction { FactionName = "Jedi" },
+                    new Faction { FactionName = "First Order" },
+                    new Faction { FactionName = "Glatic Republic" },
+                    new Faction { FactionName = "Rebel Alliance" },
+                    new Faction { FactionName = "Trade Federation" },
+                    new Faction { FactionName = "Tusken Raiders" },
+                    new Faction { FactionName = "Glatic Empire" }                
                 );
                 context.SaveChanges();
             }
@@ -36,8 +42,7 @@ namespace StarWars.Models
             {
                 context.AddRange(
                     new Episode { EpisodeName = "Episode I - The Phantom Menace (1999)" },
-                    new Episode { EpisodeName = "Episode II - Attack of the Clones (2002)" },
-                    new Episode { EpisodeName = "Episode II - Attack of the Clones (2002)" },
+                    new Episode { EpisodeName = "Episode II - Attack of the Clones (2002)" },                   
                     new Episode { EpisodeName = "Episode IV - Star Wars: A New Hope (1977)" },
                     new Episode { EpisodeName = "Episode V - The Empire Strikes Back (1980)" },
                     new Episode { EpisodeName = "Episode VI - Return of the Jedi (1983)" },
@@ -76,8 +81,7 @@ namespace StarWars.Models
                     new Starship { StarshipName = "Tyranus's solar sailer" },
                     new Starship { StarshipName = "Imperial Landing Craft" },
                     new Starship { StarshipName = "Millennium Falcon" },
-                    new Starship { StarshipName = "Naboo Royal Cruiser" },
-                    new Starship { StarshipName = "Republic Assault Ship" },
+                    new Starship { StarshipName = "Naboo Royal Cruiser" },                  
                     new Starship { StarshipName = "Republic Assault Ship" },
                     new Starship { StarshipName = "TIE interceptor" },
                      new Starship { StarshipName = "Jedi starfighter(Delta - 7)", ImageUrl = "https://starwarsblog.starwars.com/wp-content/uploads/sites/6/2013/09/jedi-starfighter-delta-7-400x266.jpg" }
@@ -93,7 +97,7 @@ namespace StarWars.Models
                     new Character { CharacterName = "Padmé Amidala", CharacterGroupID = 1, CharacterTypeID = 1, FactionID = 2, HomePlanet = "Nabu", ImageUrl = "https://www.rollingstone.com/wp-content/uploads/2018/06/rs-218676-42-Padme-Amidala.jpg?crop=1260:720&width=1260" },
                     new Character { CharacterName = "Q’ira", CharacterGroupID = 4, CharacterTypeID = 1, FactionID = 2, HomePlanet = "Game Of Thrones", ImageUrl = "https://www.rollingstone.com/wp-content/uploads/2018/06/emilia-clarke-solo-a-star-wars-story-85c0e6d8-9f9d-49c1-8d31-9df375f1b904.jpg" },
                    new Character { CharacterName = "Yoda", CharacterGroupID = 3, CharacterTypeID = 1, FactionID = 4, HomePlanet = "", ImageUrl = "https://www.rollingstone.com/wp-content/uploads/2018/06/rs-218589-4-yoda-6a430ef2-4be5-43d5-8614-e743ca7b2f69.jpg?crop=1260:720&width=1260" },
-                   new Character { CharacterName = "Darth Vader", CharacterGroupID = 2, CharacterTypeID = 2, FactionID = 1, HomePlanet = "Tatoine", ImageUrl = "https://www.rollingstone.com/wp-content/uploads/2018/06/rs-218586-2-vader-f6cdf838-912c-4bfa-8a12-f43521fbd99c.jpg?crop=1260:720&width=1260" }
+                   new Character { CharacterName = "Darth Vader", CharacterGroupID = 2, CharacterTypeID = 2, FactionID = 3, HomePlanet = "Tatoine", ImageUrl = "https://www.rollingstone.com/wp-content/uploads/2018/06/rs-218586-2-vader-f6cdf838-912c-4bfa-8a12-f43521fbd99c.jpg?crop=1260:720&width=1260" }
                 );
                 context.SaveChanges();
             }           
