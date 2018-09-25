@@ -31,7 +31,7 @@ namespace StarWars.Models
             return await Task.FromResult<IList<Faction>>(_appDbContext.Factions.Include(b=>b.Characters).ToList());
         }
 
-        public async Task<Faction> GetFaction(int Id)
+        public async Task<Faction> GetFaction(int? Id)
         {
             return await Task.FromResult(_appDbContext.Factions.Include(b => b.Characters).FirstOrDefault(f => f.Id.Equals(Id)));
         }
@@ -39,8 +39,15 @@ namespace StarWars.Models
         public async Task<string> DeleteFaction(int factionId)
         {
             var faction = _appDbContext.Factions.FirstOrDefault(f => f.Id == factionId);
-            _appDbContext.Factions.Remove(faction);
-            return await Task.FromResult("Deleted Successfully");
+            if (faction != null)
+            {
+                _appDbContext.Factions.Remove(faction);
+                _appDbContext.SaveChanges();
+                return await Task.FromResult("Deleted Successfully");
+            }
+            else {
+                return await Task.FromResult("Record Not Found");
+            }
         }
 
         public async Task<Faction> UpdateFaction(int factionId, Faction faction)

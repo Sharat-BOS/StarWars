@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using StarWars.Models;
 namespace StarWars
 {
@@ -32,7 +34,9 @@ namespace StarWars
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDBConnection")));            
             //Register Services here System or Custom Services.
             //System Services
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(options => {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
             //Built in dependency injection system
 
             //Service are objects that have certain functionality of other parts of the application 
@@ -42,7 +46,7 @@ namespace StarWars
             //Add transient method means when anyone  asks for IPieRpository a new Mock Pie Repository will be returned.
             //Initialy we used MockPie Repository because we did not connect to database now that we are using EF to connect to DB we dont need Mock Data or MockPieRepository for Dependancy injection. so its commented.
             //services.AddTransient<IPieRepository, MockPieRepository>();
-            
+
             services.AddTransient<IPieRepository, PieRepository>(); //newly Created Pie repository uses EF to connect to DB.
             services.AddTransient<IFactionRepository, FactionRepository>(); //newly Created Pie repository uses EF to connect to DB.
             services.AddTransient<IEpisodeRepository, EpisodeRepository>(); //newly Created Pie repository uses EF to connect to DB.
@@ -98,7 +102,7 @@ namespace StarWars
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         //Notes: In startup class configure is called after Configure Services Method. Here we setup request pipeline. After that application is ready to handle incoming requests.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             //Setup Request Pipe line 
             //Request Pipe line consists of number of components chained behind one other
@@ -117,6 +121,9 @@ namespace StarWars
                     HotModuleReplacement = true,
                     ReactHotModuleReplacement = true
                 });
+
+                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+                loggerFactory.AddDebug();
             }
             else
             {

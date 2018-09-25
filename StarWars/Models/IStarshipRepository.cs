@@ -14,5 +14,6 @@ namespace StarWars.Models
         Task<string> DeleteStarship(int Id);
         Task<Starship> Associate_Character_With_Starship(int starshipId, int characterID);
         Task<Starship> Remove_Character_From_Starship(int starshipId, int characterID);
+        Task<IList<Starship>> GetStarshipsByCharacterId(int id);
     }
 }

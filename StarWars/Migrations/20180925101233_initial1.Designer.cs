@@ -10,8 +10,8 @@ using StarWars.Models;
 namespace StarWars.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20180924112000_Initial1")]
-    partial class Initial1
+    [Migration("20180925101233_initial1")]
+    partial class initial1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -16,12 +16,16 @@ namespace StarWars.Models
 
         public async Task<IList<Character>> GetCharacter()
         {            
-            return await Task.FromResult<IList<Character>>(_appDbContext.Characters.Include(c => c.Faction).Include(c=>c.CharacterGroup).Include(c=>c.CharacterType).ToList());
+            return await Task.FromResult<IList<Character>>(
+                _appDbContext.Characters.Include(c=>c.CharacterType).Include(c=>c.Faction).Include(c=>c.CharacterGroup).Include(c=>c.AppersIn_Episodes).Include(c=>c.Starships).ToList()
+            );
         }
 
         public async Task<Character> GetCharacter(int Id)
         {
-            return await Task.FromResult(_appDbContext.Characters.Include(c => c.Faction).Include(c => c.CharacterGroup).Include(c => c.CharacterType).FirstOrDefault(c => c.Id == Id));
+
+            var character = _appDbContext.Characters.Include(c => c.CharacterType).Include(c => c.Faction).Include(c => c.CharacterGroup).Include(c => c.AppersIn_Episodes).Include(c => c.Starships).FirstOrDefault(c => c.Id == Id);
+            return await Task.FromResult(character);
         }
 
         public async Task<Character> AddCharacter(Character character)
@@ -67,13 +71,28 @@ namespace StarWars.Models
         public async Task<string> DeleteCharacter(int Id)
         {
             var character = _appDbContext.Characters.FirstOrDefault(f => f.Id == Id);
-            _appDbContext.Characters.Remove(character);
-            return await Task.FromResult("Deleted Successfully");
-        }
+            if (character!=null) {                
+                _appDbContext.Characters.Remove(character);
+                _appDbContext.SaveChanges();
+                return await Task.FromResult("Deleted Successfully");
+             }
+            else {
+                return await Task.FromResult("Record Not Found");
+              }
+
+}
 
         public async Task<IList<Character>> GetCharactersByFactionID(int Id)
         {
             return await Task.FromResult<IList<Character>>(_appDbContext.Characters.Where(c => c.FactionID == Id).ToList());
+        }
+
+        public async Task<IList<Character>> GetCharactersByEpisodeId(int Id)
+        {
+            // return list of episodes ID where Character ID  appears
+            var ListofCharacters = _appDbContext.EpisodeCharacter.Where(e => e.EpisodeId == Id).Select(r => r.CharacterId);
+            var characters = _appDbContext.Characters.Where(e => ListofCharacters.Contains(e.Id));
+            return await Task.FromResult(characters.ToList());
         }
     }
 }

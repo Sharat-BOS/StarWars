@@ -60,8 +60,16 @@ namespace StarWars.Models
         public async Task<string> DeleteStarship(int Id)
         {
             var starship = _appDbContext.Starships.FirstOrDefault(f => f.Id == Id);
-            _appDbContext.Starships.Remove(starship);
-            return await Task.FromResult("Deleted Successfully");
+            if (starship != null)
+            {
+                _appDbContext.Starships.Remove(starship);
+                _appDbContext.SaveChanges();
+                return await Task.FromResult("Deleted Successfully");
+            }
+            else {
+                return await Task.FromResult("Record Not Found");
+            }            
+
         }
 
         public async Task<IList<Starship>> GetStarship()
@@ -74,5 +82,12 @@ namespace StarWars.Models
             return await Task.FromResult(_appDbContext.Starships.FirstOrDefault(s => s.Id == Id));
         }
 
+        public async Task<IList<Starship>> GetStarshipsByCharacterId(int Id)
+        {
+            // return list of episodes ID where Character ID  appears
+            var ListofStarships = _appDbContext.StarshipCharacter.Where(s => s.CharacterId == Id).Select(r => r.StarshipId);
+            var Starships = _appDbContext.Starships.Where(e => ListofStarships.Contains(e.Id));
+            return await Task.FromResult(Starships.ToList());
+        }
     }
 }

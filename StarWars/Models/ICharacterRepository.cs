@@ -15,5 +15,7 @@ namespace StarWars.Models
         Task<string> DeleteCharacter(int Id);
         Task<Character> Associate_Episode_With_Character(int episodeId, int characterID);
         Task<Character> Remove_Episode_From_Character(int episodeId, int characterID);
+        Task<IList<Character>> GetCharactersByEpisodeId(int episodeId);
+        
     }
 }

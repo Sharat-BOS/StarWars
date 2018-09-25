@@ -11,6 +11,8 @@ namespace StarWars.Models
     {
         public StarWarsMutation(ICharacterRepository characterRepository, IFactionRepository factionRepository, IEpisodeRepository episodeRepository, ICharacterGroupRepository characterGroupRepository, ICharacterTypeRepository characterTypeRepository, IStarshipRepository starshipRepository)
         {
+             # region Faction
+
             Name = "Create Faction Mutation";
 
             Field<FactionQLType>(
@@ -64,7 +66,7 @@ namespace StarWars.Models
 
             Name = "Delete Faction Mutation";
 
-            Field<FactionQLType>(
+            Field<StringGraphType>(
                 "deleteFaction",
                 arguments: new QueryArguments(
                    new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "factionId" }
@@ -75,7 +77,73 @@ namespace StarWars.Models
                     return factionRepository.DeleteFaction(factionId).Result;
                 });
 
+            #endregion
+            #region Episode
+            Name = "Create Episode Mutation";
 
+            Field<EpisodeQLType>(
+                "createEpisode",
+                arguments: new QueryArguments(
+                    new QueryArgument<NonNullGraphType<EpisodeInputType>> { Name = "episode" }
+                ),
+                resolve: context =>
+                {
+                    var episode = context.GetArgument<Episode>("episode");
+                    return episodeRepository.AddEpisode(episode).Result;
+                });
+
+            Field<EpisodeQLType>(
+               "updateEpisode",
+               arguments: new QueryArguments(
+                   new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "episodeId" },
+                   new QueryArgument<NonNullGraphType<EpisodeInputType>> { Name = "episode" }
+               ),
+               resolve: context =>
+               {
+                   var episode = context.GetArgument<Episode>("episode");
+                   var episodeId= context.GetArgument<int>("episodeId");
+                   return episodeRepository.UpdateEpisode(episodeId,episode).Result;
+               });
+
+            Field<EpisodeQLType>(
+              "associateCharacterToEpisode",
+              arguments: new QueryArguments(
+                  new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "characterId" },
+                  new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "episodeId" }
+              ),
+              resolve: context =>
+              {
+                  var episodeId = context.GetArgument<int>("episodeId");
+                  var characterId = context.GetArgument<int>("characterId");
+                  return episodeRepository.Associate_Character_With_Episode(episodeId, characterId).Result;
+              });
+            Field<EpisodeQLType>(
+              "removeCharacterFromEpisode",
+              arguments: new QueryArguments(
+                  new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "characterId" },
+                  new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "episodeId" }
+              ),
+              resolve: context =>
+              {
+                  var episodeId = context.GetArgument<int>("episodeId");
+                  var characterId = context.GetArgument<int>("characterId");
+                  return episodeRepository.Remove_Character_From_Episode(episodeId, characterId).Result;
+              });
+
+            Name = "Delete Episode Mutation";
+
+            Field<StringGraphType>(
+                "deleteEpisode",
+                arguments: new QueryArguments(
+                   new QueryArgument<NonNullGraphType<IntGraphType>> { Name = "episodeId" }
+                ),
+                resolve: context =>
+                {
+                    var episodeId = context.GetArgument<int>("episodeId");
+                    return episodeRepository.DeleteEpisode(episodeId).Result;
+                });
+
+            #endregion
         }
     }
 }

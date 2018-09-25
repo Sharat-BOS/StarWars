@@ -27,7 +27,9 @@ namespace StarWars.Models
         {
             Field(x => x.Id).Description("Episode id.");
             Field(x => x.EpisodeName, nullable: false).Description("Episode name.");
-            Field<ListGraphType<EpisodeCharacterQLType>>("EpisodeCharacter", "Episode Characters");
+            Field<ListGraphType<CharacterQLType>>("Cast", "Episode Characters",
+                 resolve: context => characterRepository.GetCharactersByEpisodeId(context.Source.Id)
+                );
         }
     }
     public class EpisodeCharacterQLType : ObjectGraphType<EpisodeCharacter>
@@ -43,20 +45,39 @@ namespace StarWars.Models
 
     public class CharacterQLType : ObjectGraphType<Character>
     {
-        public CharacterQLType(IFactionRepository factionRepository, ICharacterRepository characterRepository)
+        public CharacterQLType(IFactionRepository factionRepository, ICharacterRepository characterRepository, ICharacterTypeRepository characterTypeRepository, ICharacterGroupRepository characterGroupRepository,IEpisodeRepository  episodeRepository,IStarshipRepository starshipRepository)
         {
             Field(x => x.Id).Description("Character id.");
             Field(x => x.CharacterName, nullable: false).Description("Character name.");
-            Field(x => x.CharacterTypeID, nullable: true).Description("Character Type ID.");            
-            Field<ObjectGraphType<CharacterTypeQLType>>("CharacterType", "Type of Character");
+            Field(x => x.CharacterTypeID, nullable: true).Description("Character Type ID.");           
+            Field<CharacterTypeQLType>("CharacterType", "Character Type",
+                resolve: context => characterTypeRepository.GetCharacterType(context.Source.CharacterTypeID)
+                );
             Field(x => x.CharacterGroupID, nullable: false).Description("Character Group ID.");
-            Field<ObjectGraphType<CharacterGroupQLType>>("CharacterGroup", "Character Group");
-            Field<ObjectGraphType<EpisodeCharacterQLType>>("AppersIn_Episodes", "character appears in following Episodes");
-            Field<ObjectGraphType<StarshipCharacterQLType>>("Starships", "character Starships");
+            Field<CharacterGroupQLType>("CharacterGroup", "Character Group",
+                arguments: new QueryArguments( new QueryArgument<IntGraphType>() {
+                    Name = "id",
+                    Description = "Character Group ID."
+                }),
+               resolve: context => characterGroupRepository.GetCharacterGroup(context.Source.CharacterGroupID)
+               );
+            Field<ListGraphType<EpisodeQLType>>("AppersIn_Episodes", "character appears in following Episodes",
+                 arguments: new QueryArguments(new QueryArgument<IntGraphType>()
+                 {
+                     Name = "id",
+                     Description = "Character ID."
+                 }),
+               resolve: context => episodeRepository.GetEpisodeByCharacterId(context.Source.Id)
+               );
+            Field<ListGraphType<StarshipQLType>>("Starships", "character Starships",
+              resolve: context => starshipRepository.GetStarshipsByCharacterId(context.Source.Id)
+              );                       
             Field(x => x.HomePlanet, nullable: false).Description("Character HomePlanet.");
-            Field(x => x.Purpose, nullable: false).Description("Character Purpose.");
+            Field(x => x.Purpose, nullable: true).Description("Character Purpose.");
             Field(x => x.FactionID, nullable: true).Description("Character FactionID.");
-            Field<ObjectGraphType<FactionQLType>>("Faction", "character Faction");
+            Field<FactionQLType>("Faction", "character Faction",
+             resolve: context => factionRepository.GetFaction(context.Source.FactionID)
+             );           
             Field(x => x.ImageUrl, nullable: false).Description("Character ImageUrl.");
             //    (
             //    "Faction",

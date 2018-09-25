@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace StarWars.Models
         }
         public async Task<Episode> Associate_Character_With_Episode(int episodeId, int characterID)
         {
-            var episode = _appDbContext.Episodes.FirstOrDefault(f => f.Id == episodeId);
+            var episode = _appDbContext.Episodes.Include(e=>e.Cast).FirstOrDefault(f => f.Id == episodeId);
             var character = _appDbContext.Characters.FirstOrDefault(c => c.Id == characterID);
             var episodeCharacter = new EpisodeCharacter
             {
@@ -39,8 +40,11 @@ namespace StarWars.Models
                 Episode = episode,
                 Character = character
             };
-            episode.Cast.Add(episodeCharacter);
-            _appDbContext.SaveChanges();
+            var charactesExists = episode.Cast.FirstOrDefault(c => c.CharacterId == characterID && c.EpisodeId == episodeId);
+            if (charactesExists == null) {
+                episode.Cast.Add(episodeCharacter);
+                _appDbContext.SaveChanges();
+            }            
             return await Task.FromResult(episode);
         }
 
@@ -56,8 +60,16 @@ namespace StarWars.Models
         public async Task<string> DeleteEpisode(int episodeId)
         {
             var episode = _appDbContext.Episodes.FirstOrDefault(f => f.Id == episodeId);
-            _appDbContext.Episodes.Remove(episode);
-            return await Task.FromResult("Deleted Successfully");
+            if (episode != null)
+            {
+                _appDbContext.Episodes.Remove(episode);
+                _appDbContext.SaveChanges();
+                return await Task.FromResult("Deleted Successfully");
+            }
+            else {
+                return await Task.FromResult("Record Not Found");
+            }
+            
         }
         public async Task<Episode> GetEpisode(int Id)
         {
@@ -66,6 +78,13 @@ namespace StarWars.Models
         public async Task<IList<Episode>> GetEpisode()
         {
             return await Task.FromResult<IList<Episode>>(_appDbContext.Episodes.ToList());
+        }
+        public async Task<IList<Episode>> GetEpisodeByCharacterId(int Id)
+        {
+            // return list of episodes ID where Character ID  appears
+            var ListofEpisodes = _appDbContext.EpisodeCharacter.Where(e => e.CharacterId == Id).Select(r=>r.EpisodeId); 
+            var Episodes = _appDbContext.Episodes.Where(e => ListofEpisodes.Contains(e.Id));
+            return await Task.FromResult(Episodes.ToList());
         }
 
     }
