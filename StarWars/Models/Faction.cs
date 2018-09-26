@@ -14,5 +14,6 @@ namespace StarWars.Models
         public int Id { get; set; }
         public string FactionName { get; set; }        //Empire or Rebels
         public IList<Character> Characters { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

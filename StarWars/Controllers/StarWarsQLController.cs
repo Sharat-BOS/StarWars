@@ -47,6 +47,7 @@ namespace StarWars.Controllers
                     _logger.LogError("GraphQL errors: {0}", result.Errors);
                     return BadRequest(result);
                 }
+                _logger.LogInformation("GraphQL Request Data: {result}", JsonConvert.SerializeObject(query));
                 _logger.LogDebug("GraphQL execution result: {result}", JsonConvert.SerializeObject(result.Data));
                 return Ok(result);
             }

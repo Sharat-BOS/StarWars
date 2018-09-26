@@ -13,6 +13,7 @@ namespace StarWars.Models
             Name = "FactionInput";
             Field<NonNullGraphType<StringGraphType>>("FactionName");
             Field<ListGraphType<CharacterQLType>>("Characters", "Faction Characters");
+            Field<NonNullGraphType<StringGraphType>>("ImageUrl");
         }
     }
 
@@ -23,6 +24,8 @@ namespace StarWars.Models
             Name = "EpisodeInput";
             Field<NonNullGraphType<StringGraphType>>("EpisodeName");
             Field<ListGraphType<EpisodeCharacterInputType>>("Cast", "Episode Cast");
+            Field<NonNullGraphType<StringGraphType>>("Summary");
+            Field<NonNullGraphType<StringGraphType>>("ImageUrl");
         }
     }
 

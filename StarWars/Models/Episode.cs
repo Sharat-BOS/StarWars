@@ -13,7 +13,9 @@ namespace StarWars.Models
         }
         public int Id { get; set; }
         public string EpisodeName { get; set; }
-        public IList<EpisodeCharacter> Cast { get; set; }
+        public IList<EpisodeCharacter> Cast { get; set; }        
+        public string Summary { get; set; }
+        public string ImageUrl { get; set; }
         //[NotMapped]
         //public IList<Starship> Starships { get; set; }       
     }

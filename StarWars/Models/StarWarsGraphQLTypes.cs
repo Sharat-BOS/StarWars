@@ -15,6 +15,7 @@ namespace StarWars.Models
             Field(x => x.Id).Description("Faction id.");
             Field(x => x.FactionName, nullable: false).Description("Faction name.");
             Field<ListGraphType<CharacterQLType>>("Characters", "Faction Characters");
+            Field(x => x.ImageUrl, nullable: true).Description("ImageUrl.");
             //    (
             //    "Characters",
             //    resolve: context => characterRepository.GetCharactersByFactionID(context.Source.Id).Result.ToList()
@@ -30,6 +31,8 @@ namespace StarWars.Models
             Field<ListGraphType<CharacterQLType>>("Cast", "Episode Characters",
                  resolve: context => characterRepository.GetCharactersByEpisodeId(context.Source.Id)
                 );
+            Field(x => x.Summary, nullable: true).Description("Summary.");
+            Field(x => x.ImageUrl, nullable: true).Description("ImageUrl.");
         }
     }
     public class EpisodeCharacterQLType : ObjectGraphType<EpisodeCharacter>
