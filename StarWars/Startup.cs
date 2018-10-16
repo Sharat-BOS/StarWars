@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using GraphQL;
 using GraphQL.Types;
+using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
@@ -11,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.OData.Edm;
 using Newtonsoft.Json;
 using StarWars.Models;
 namespace StarWars
@@ -76,6 +79,9 @@ namespace StarWars
             //services.AddSingleton(s => new StarWarsSchema(new FuncDependencyResolver(type => (GraphType)s.GetRequiredService(type))));
             services.AddSingleton<ISchema>(new StarWarsSchema(new FuncDependencyResolver(type => sp.GetService(type))));
 
+            //AddOData 
+            services.AddOData();
+
             services.AddCors(options =>
             {
                 //Create CORS Policy for any Origin,Specific methods and allowed headers
@@ -85,11 +91,11 @@ namespace StarWars
                    .WithHeaders(Configuration["AllowedHeaders"]));
 
                 //Create CORS Policy for specific Origin,Specific methods and allowed headers
-                options.AddPolicy("CorsPolicy_With_Specific_Origin",
-                    builder => builder.WithOrigins("*")
-                   .WithMethods("POST", "GET", "PUT", "DELETE", "OPTIONS")
-                   .WithHeaders("X-Requested-With,Content-Type,clientid,tokenid,applicationid,licenseKey,Content-Type,Accept,Chunk-Index,Chunk-Max,Rename,InstanceUserData,InstanceData,UploadId,FileId, ,isLastFileLastChunk,pageNumber,pageSize,googleTokenID")
-                   );
+                //options.AddPolicy("CorsPolicy_With_Specific_Origin",
+                //    builder => builder.WithOrigins("*")
+                //   .WithMethods("POST", "GET", "PUT", "DELETE", "OPTIONS")
+                   //.WithHeaders("X-Requested-With,Content-Type,clientid,tokenid,applicationid,licenseKey,Content-Type,Accept,Chunk-Index,Chunk-Max,Rename,InstanceUserData,InstanceData,UploadId,FileId, ,isLastFileLastChunk,pageNumber,pageSize,googleTokenID")
+                  // );
 
             });
 
@@ -121,7 +127,6 @@ namespace StarWars
                     HotModuleReplacement = true,
                     ReactHotModuleReplacement = true
                 });
-
                 loggerFactory.AddConsole(Configuration.GetSection("Logging"));
                 loggerFactory.AddDebug();
             }
@@ -129,28 +134,66 @@ namespace StarWars
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseGraphiQl("/api/starwars/ql");
             //provides support for Text only status codes pages for http error codes between 400-599
             app.UseStatusCodePages();
             //Serve Static Files 
             app.UseStaticFiles();
-            //Use MVC with specified routes only one route is defined because it is a single page applciation.
+            app.UseMvc(b =>
+            {
+                b.MapODataServiceRoute("odata", "odata", GetEdmModel());
+            });
+            //Use MVC with specified routes only one route is defined because it is a single page application.
             app.UseMvc(routes =>
             {
-               
+                //OData Service Route
+                routes.MapODataServiceRoute("odata", "odata", GetEdmModel());
+                //routes.MapRoute(
+                //   name: "default",
+                //   template: "{controller=Home}/{action=Index}/{id?}");
 
-               
                 routes.MapRoute(
-                   name: "default",
-                   template: "{controller=Home}/{action=Index}/{id?}");
+                   name: "Faction",
+                   template: "{controller=MVC_Factions}/{action=Index}/{id?}");
 
                 routes.MapRoute(
-                   name: "Pie",
-                   template: "{controller=Pie}/{action=List}/{id?}");
+                   name: "FactionDetails",
+                   template: "{controller=MVC_Factions}/{action=Details}/{id?}");
 
-                routes.MapSpaFallbackRoute(
-                    name: "spa-fallback",
-                    defaults: new { controller = "Home", action = "Index" });
+                routes.MapRoute(
+                   name: "FactionCreate",
+                   template: "{controller=MVC_Factions}/{action=Create}/{id?}");
+
+                routes.MapRoute(
+                   name: "FactionEdit",
+                   template: "{controller=MVC_Factions}/{action=Edit}/{id?}");
+               
+                
+                routes.MapRoute(
+                name: "FactionDelete",
+                template: "{controller=MVC_Factions}/{action=Delete}/{id?}");
+
+                
+
+                //routes.MapSpaFallbackRoute(
+                //    name: "spa-fallback",
+                //    defaults: new { controller = "Home", action = "Index" });
             });
+        }
+
+        private static IEdmModel GetEdmModel()
+        {
+            ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
+            builder.EntitySet<Faction>("Factions");
+            builder.EntitySet<Episode>("Episodes");
+            builder.EntitySet<Character>("Characters");
+            builder.EntitySet<EpisodeCharacter>("EpisodeCharacter");
+            builder.EntitySet<StarshipCharacter>("StarshipCharacter");
+            builder.EntitySet<CharacterType>("CharacterTypes");
+            builder.EntitySet<CharacterGroup>("CharacterGroups");
+            builder.EntitySet<Starship>("Starships");    
+            return builder.GetEdmModel();
         }
     }
 }

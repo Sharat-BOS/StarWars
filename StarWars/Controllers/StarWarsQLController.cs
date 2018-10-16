@@ -13,7 +13,7 @@ using StarWars.Models;
 
 namespace StarWars.Controllers
 {
-    [Route("api/starwars/ql")]
+    [Route("/graphql")]
     public class StarWarsQLController : Controller
     {
         private readonly IDocumentExecuter _documentExecuter;
